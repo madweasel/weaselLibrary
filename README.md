@@ -40,4 +40,4 @@ Contact: [karaizy@mad-weasel.de](mailto:karaizy@mad-weasel.de).
 # License
 Copyright (c) Thomas Weber. All rights reserved.
 
-Licensed under the [MIT](LICENSE.txt) License.
+Licensed under the [MIT](LICENSE) License.
