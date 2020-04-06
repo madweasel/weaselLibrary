@@ -70,14 +70,14 @@ private:
 
 	plainButton							buttonRollLeft;															// cycles through the 4 rollStates
 	plainButton							buttonRollRight;														// ''
-	plainButton							buttonLeft;																// rotates the cube by 90°
+	plainButton							buttonLeft;																// rotates the cube by 90 degree
 	plainButton							buttonTop;																// ''
 	plainButton							buttonRight;															// ''
 	plainButton							buttonBottom;															// ''
 	plainButton							buttonHome;																// rotates the cube back, so that the front area is the current one
 	areaClass							areas[numFaces][numAreas];												// arrays with all areas
 	faceAreaIndex						faceAreaState;															// orientation state - current area belonging to the orientation state of the cube
-	faceAreaRollIndex					stateAfter90DegRot[numFaces][maxRollStates][idNum90DegRotations];		// target state after a 90° rotation, when a button buttonLeft, buttonRight, etc. was clicked
+	faceAreaRollIndex					stateAfter90DegRot[numFaces][maxRollStates][idNum90DegRotations];		// target state after a 90 degree rotation, when a button buttonLeft, buttonRight, etc. was clicked
 	unsigned int						numRollStates[numAreas];												// number of rollstates of each area (center=4, edge=2, corner=3)
 	unsigned int						rollState							= 0;								// orientation state - the object is rolled stepwise by 90/120/180 deg around the view axis n-times
 	color								colorNormalCenter					= color::gray;						// for inner center areas

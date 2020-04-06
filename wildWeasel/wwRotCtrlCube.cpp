@@ -524,7 +524,7 @@ void wildWeasel::rotationControlCube::rotate(faceAreaIndex newFaceAreaState, uns
 	faceAreaState	= newFaceAreaState;
 	rollState		= newRollState;
 
-	// the 90° buttons shall only be visible when the center area is shown
+	// the 90 degree buttons shall only be visible when the center area is shown
 	guiElemState newState = (faceAreaState.area == idCenterArea ? guiElemState::DRAWED : guiElemState::HIDDEN);
 	buttonLeft		.setState(newState);
 	buttonTop		.setState(newState);
