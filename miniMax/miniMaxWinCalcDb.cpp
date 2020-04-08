@@ -458,7 +458,7 @@ void miniMaxWinCalcDb::threadSolve()
 	
 	// calculate
 	pMiniMax->setOutputStream(outputStream, nullptr, nullptr);
-	pMiniMax->calculateDatabase(maxDepthOfTree, onlyPrepareLayer, 0);
+	pMiniMax->calculateDatabase(maxDepthOfTree, onlyPrepareLayer);
 
 	// turn "running" LED off
 	hLabelCalculationRunning	.setText(L"Calculation stopped");

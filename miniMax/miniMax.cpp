@@ -127,7 +127,7 @@ void *miniMax::getBestChoice(unsigned int tilLevel, unsigned int *choice, unsign
 // Name: calculateDatabase()
 // Desc: Calculates the database, which must be already open.
 //-----------------------------------------------------------------------------
-void miniMax::calculateDatabase(unsigned int maxDepthOfTree, bool onlyPrepareLayer, unsigned int compressionAlgId)
+void miniMax::calculateDatabase(unsigned int maxDepthOfTree, bool onlyPrepareLayer)
 {
    	// locals
 	bool			abortCalculation = false;

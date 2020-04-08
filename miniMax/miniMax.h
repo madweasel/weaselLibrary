@@ -260,7 +260,7 @@ public:
 
 	// Database functions
 	bool					openDatabase					(const char *directory, unsigned int maximumNumberOfBranches);
-	void					calculateDatabase           	(unsigned int maxDepthOfTree, bool onlyPrepareLayer, unsigned int compressionAlgId);
+	void					calculateDatabase           	(unsigned int maxDepthOfTree, bool onlyPrepareLayer);
 	bool					isCurrentStateInDatabase		(unsigned int threadNo);
 	void					closeDatabase					();
     void                    unloadAllLayers             	();

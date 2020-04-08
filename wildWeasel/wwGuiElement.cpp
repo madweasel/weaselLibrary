@@ -147,7 +147,7 @@ void wildWeasel::guiElement::setText(const WCHAR* newText)
 	text.assign(newText);
 
 	// ... work-around for chars, which does not exist in the font file. should be solved differently
-	replace(text.begin(), text.end(), 8217,  39);	// '’' -> "'"	
+	replace(text.begin(), text.end(), 8217,  39);	// ''' -> "'"	
 	replace(text.begin(), text.end(), '\t', ' ');
 };
 
