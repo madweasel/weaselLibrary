@@ -1,4 +1,5 @@
 //--------------------------------------------------------------------------------------
+//
 // pch.h
 // Header for standard system include files.
 //
@@ -11,17 +12,20 @@
 #pragma once
 
 #include <WinSDKVer.h>
-//#define _WIN32_WINNT _WIN32_WINNT_WIN7	// needed for DirectXTK 11
-#define _WIN32_WINNT _WIN32_WINNT_WIN8	// needed for win compression api
+#define _WIN32_WINNT 0x0A00
 #include <SDKDDKVer.h>
+
+// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN		
+#define _CRT_SECURE_NO_DEPRECATE
 
 // Use the C++ standard templated min/max
 #define NOMINMAX
 
-// DirectX apps don't need GDI
-#define NODRAWTEXT
+// DirectX apps don't need GDI   -> yes they do !
+//#define NODRAWTEXT
 //#define NOGDI
-#define NOBITMAP
+//#define NOBITMAP
 
 // Include <mcx.h> if you need this
 #define NOMCX
@@ -32,51 +36,57 @@
 // WinHelp is deprecated
 #define NOHELP
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
 #include <wrl/client.h>
+#include <wrl/event.h>
+#include <shellapi.h>
 
-// DirectX 11
-#include <d3d11_1.h>
-#if defined(NTDDI_WIN10_RS2)
-#include <dxgi1_6.h>
-#else
-#include <dxgi1_5.h>
-#endif
+#include <d3d12.h>
+#include <dxgi1_4.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 
-// DirectXTK 11
-// #include "Audio.h"
+#include "d3dx12.h"
+
+#include <stdio.h>
+#include <pix.h>
+
+#ifdef _DEBUG
+#include <dxgidebug.h>
+#endif
+
+#include "Audio.h"
 #include "CommonStates.h"
 #include "DirectXHelpers.h"
 #include "DDSTextureLoader.h"
+#include "DescriptorHeap.h"
 #include "Effects.h"
 #include "GamePad.h"
 #include "GeometricPrimitive.h"
+#include "GraphicsMemory.h"
 #include "Keyboard.h"
 #include "Model.h"
 #include "Mouse.h"
 #include "PrimitiveBatch.h"
+#include "ResourceUploadBatch.h"
+#include "RenderTargetState.h"
 #include "SimpleMath.h"
 #include "SpriteBatch.h"
 #include "SpriteFont.h" 
 #include "VertexTypes.h"
 #include <WICTextureLoader.h>
 
-// win32 api
+// standard library & win32 api
 #include <windows.h>
 #include <wincodec.h>
 #include <windowsx.h>
-#include <wingdi.h>
+#include <Wingdi.h>
 #include <shlwapi.h>
 #include <shlobj.h>
 #include <commdlg.h>
 #include <Commctrl.h>
 #include <Dbt.h>
 #include <ShellScalingApi.h>
-#include <shellapi.h>
 
 // std
 #include <algorithm>
@@ -93,18 +103,13 @@
 #include <iomanip>
 #include <random>
 #include <numeric>
-#include <mutex> 
-#include <filesystem>
-#include <stdio.h>
 
-// DirectX TK Samples
-#include "DeviceResources.h"
-#include "StepTimer.h"
+// boost (c++17)
+// ... #include <boost/filesystem.hpp>
 
-
-#ifdef _DEBUG
-#include <dxgidebug.h>
-#endif
+// DirectX Toolkit
+#include "..\\DirectXTK\\DeviceResources.h"
+#include "..\\DirectXTK\\StepTimer.h"
 
 namespace DX
 {
@@ -114,10 +119,10 @@ namespace DX
     public:
         com_exception(HRESULT hr) : result(hr) {}
 
-        virtual const char* what() const noexcept override
+        virtual const char* what() const override
         {
-            static char s_str[64] = {};
-            sprintf_s(s_str, "Failure with HRESULT of %08X", static_cast<unsigned int>(result));
+            static char s_str[64] = { 0 };
+            sprintf_s(s_str, "Failure with HRESULT of %08X", result);
             return s_str;
         }
 
