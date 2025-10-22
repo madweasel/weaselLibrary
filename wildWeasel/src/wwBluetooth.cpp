@@ -133,37 +133,37 @@ bool wildWeasel::bluetoothViaQt::startServer(const wstring& serviceName, const w
 	// make class id
 	QBluetoothServiceInfo::Sequence profileSequence;
 	QBluetoothServiceInfo::Sequence classId;
-	classId << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::SerialPort));
+	classId << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::ServiceClassUuid::SerialPort));
 	classId << QVariant::fromValue(quint16(0x100));
 	profileSequence.append(QVariant::fromValue(classId));
 	serviceInfo.setAttribute(QBluetoothServiceInfo::BluetoothProfileDescriptorList, profileSequence);
 
 	classId.clear();
 	classId << QVariant::fromValue(QBluetoothUuid(serviceUuid));
-	classId << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::SerialPort));
+	classId << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::ServiceClassUuid::SerialPort));
 
 	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceClassIds, classId);
 
 	// Service name, description and provider
-	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceName,		serviceName.c_str());
-	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceDescription, serviceDescription.c_str());
-	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceProvider,	provider.c_str());
+	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceName,		QString::fromStdWString(serviceName));
+	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceDescription, QString::fromStdWString(serviceDescription));
+	serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceProvider,	QString::fromStdWString(provider));
 
 	// set Service UUID
 	serviceInfo.setServiceUuid(QBluetoothUuid(serviceUuid));
 
 	// Service Discoverability
 	QBluetoothServiceInfo::Sequence publicBrowse;
-	publicBrowse << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::PublicBrowseGroup));
+	publicBrowse << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::ServiceClassUuid::PublicBrowseGroup));
 	serviceInfo.setAttribute(QBluetoothServiceInfo::BrowseGroupList, publicBrowse);
 
 	// Protocol descriptor list
 	QBluetoothServiceInfo::Sequence protocolDescriptorList;
 	QBluetoothServiceInfo::Sequence protocol;
-	protocol << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::L2cap));
+	protocol << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::ProtocolUuid::L2cap));
 	protocolDescriptorList.append(QVariant::fromValue(protocol));
 	protocol.clear();
-	protocol << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::Rfcomm))
+	protocol << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::ProtocolUuid::Rfcomm))
 			 << QVariant::fromValue(quint8(rfcommServer->serverPort()));
 	protocolDescriptorList.append(QVariant::fromValue(protocol));
 	serviceInfo.setAttribute(QBluetoothServiceInfo::ProtocolDescriptorList, protocolDescriptorList);
@@ -223,11 +223,11 @@ bool wildWeasel::bluetoothViaQt::connectToRemoteDevice(deviceAndServiceName& rem
     clientSocket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
     clientSocket->connectToService(remoteService);
 
-    QObject::connect(clientSocket, &QBluetoothSocket::readyRead,											bind(&wildWeasel::bluetoothViaQt::readSocket				, this, clientSocket) );
-    QObject::connect(clientSocket, &QBluetoothSocket::connected,											bind(&wildWeasel::bluetoothViaQt::connectedToServer			, this, clientSocket) );
-    QObject::connect(clientSocket, &QBluetoothSocket::disconnected,											bind(&wildWeasel::bluetoothViaQt::disconnectedFromServer	, this, clientSocket) );
-    QObject::connect(clientSocket, QOverload<QBluetoothSocket::SocketError>::of(&QBluetoothSocket::error),	bind(&wildWeasel::bluetoothViaQt::onSocketErrorOccurred		, this, std::placeholders::_1) );
-		
+    QObject::connect(clientSocket, &QBluetoothSocket::readyRead,		bind(&wildWeasel::bluetoothViaQt::readSocket				, this, clientSocket) );
+    QObject::connect(clientSocket, &QBluetoothSocket::connected,		bind(&wildWeasel::bluetoothViaQt::connectedToServer			, this, clientSocket) );
+    QObject::connect(clientSocket, &QBluetoothSocket::disconnected,		bind(&wildWeasel::bluetoothViaQt::disconnectedFromServer	, this, clientSocket) );
+    QObject::connect(clientSocket, &QBluetoothSocket::errorOccurred,	bind(&wildWeasel::bluetoothViaQt::onSocketErrorOccurred		, this, std::placeholders::_1) );
+
 	return true;
 }
 
@@ -343,9 +343,9 @@ void wildWeasel::bluetoothViaQt::disconnectedFromServer(QBluetoothSocket* pClien
 
 void wildWeasel::bluetoothViaQt::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
 {
-	if (error == QBluetoothSocket::NoSocketError) return;
-    QMetaEnum metaEnum = QMetaEnum::fromType<QBluetoothSocket::SocketError>();
-    QString errorString = clientSocket->peerName() + QLatin1Char(' ') + metaEnum.valueToKey(error) + QLatin1String(" occurred");
+	if (error == QBluetoothSocket::SocketError::NoSocketError) return;
+	QMetaEnum metaEnum = QMetaEnum::fromType<QBluetoothSocket::SocketError>();
+	QString errorString = clientSocket->peerName() + QLatin1Char(' ') + QString(metaEnum.valueToKey(static_cast<int>(error))) + QLatin1String(" occurred");
 }
 
 bool wildWeasel::bluetoothViaQt::read(vector<unsigned char>& bytes)
